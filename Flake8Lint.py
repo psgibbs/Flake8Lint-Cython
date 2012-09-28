@@ -56,8 +56,9 @@ class Flake8LintCommand(sublime_plugin.TextCommand):
         if not filename:
             return
 
-        # check only Python files
-        if not self.view.match_selector(0, 'source.python'):
+        # check only Python or cython files
+        if not (self.view.match_selector(0, 'source.python') or
+                self.view.match_selector(0, 'source.cython')):
             return
 
         # save file if dirty
@@ -73,9 +74,11 @@ class Flake8LintCommand(sublime_plugin.TextCommand):
 
         # lint with pep8
         if settings.get('pep8', True):
+            settings_postfix = "_cython" if self.view.match_selector(0, 'source.cython') else ""
+
             pep8style = pep8.StyleGuide(
-                select=settings.get('select', []),
-                ignore=settings.get('ignore', []),
+                select=settings.get('select' + settings_postfix, []),
+                ignore=settings.get('ignore' + settings_postfix, []),
                 reporter=Pep8Report
             )
 
