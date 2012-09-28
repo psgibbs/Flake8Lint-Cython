@@ -69,7 +69,7 @@ class Flake8LintCommand(sublime_plugin.TextCommand):
         warnings = []
 
         # lint with pyflakes
-        if settings.get('pyflakes', True):
+        if settings.get('pyflakes', True) and not self.view.match_selector(0, 'source.cython'):
             warnings.extend(pyflakes.checkPath(filename))
 
         # lint with pep8
